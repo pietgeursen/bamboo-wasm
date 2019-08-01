@@ -1,15 +1,11 @@
-<div align="center">
+# bamboo-wasm
 
-  <h1><code>bamboo-wasm</code></h1>
-
-  <strong><a href="https://github.com/AljoschaMeyer/bamboo">bamboo</a> compiled to wasm from Rust</strong>
-
-</div>
+> [bamboo](https://github.com/AljoschaMeyer/bamboo) compiled to wasm from [rust](https://github.com/pietgeursen/bamboo-rs)
 
 The goal of this module is to allow you to `publish` new entries or `add` valid exisiting entries to a bamboo `Log`. 
 
 Conceptually, a `Log` is a collection of `Entries` published by a single author.
-Bamboo supports [partial replication](https://github.com/AljoschaMeyer/bamboo#partial-replication-and-log-verification). Partial replication means a `Log` may not contain all `Entries` every published by an author. 
+Bamboo supports [partial replication](https://github.com/AljoschaMeyer/bamboo#partial-replication-and-log-verification). Partial replication means a `Log` may not contain all `Entries` ever published by an author. 
 
 This module has no opinions about _where_ you store the log. You could use leveldb or sqlite or IndexedDB if this is used in the browser.
 You could also just store entries in an object or array if you want to store in memory. When constructing a `Log` you must provide a `store` object that implements some required methods (see below.) 
@@ -23,7 +19,7 @@ Publish a new `entry`.
 ```js
   import { Log, MemoryStore } from 'bamboo-wasm';
 
-  const { public } = // Get the public key for this author
+  const { public, secret } = // Get a keypair from somewhere.
   const store = new MemoryStore()
 
   const log = new Log({store, public, secret})
@@ -44,12 +40,12 @@ Add existing `entries` that have already been published. Typically you'd do this
 ```js
   import { Log, MemoryStore } from 'bamboo-wasm';
 
-  const { public, secret } = // Get a keypair from somewhere.
+  const { public } = // Get the public key of this `Log` 
   const store = new MemoryStore()
 
-  const log = new Log({store, public, secret})
+  const log = new Log({store, public})
 
-  const messages =  // what type here, need to see what wasm bindgen provides 
+  const messages = [..] // what type here, need to see what wasm bindgen provides 
 
   log.add(messages)
     .then(() => {
